@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from '../../hooks/useI18n';
 import { symptoms, Symptom, riskFactors } from '../../data/symptoms';
 import { medicines } from '../../data/medicines';
 import { matchDrugs, checkSafetyNet, detectRedFlags, MatchResult, RedFlagResult } from '../../lib/decision-engine';
+import { openNearbyInMaps } from '@/lib/nearby';
 import { 
   ChevronRight, 
   ChevronLeft, 
@@ -19,7 +20,8 @@ import {
   ShieldCheck,
   Stethoscope,
   AlertCircle,
-  ShoppingBag
+  MapPin,
+  Hospital
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -38,6 +40,7 @@ export default function SurveyPage() {
   const [results, setResults] = useState<MatchResult[] | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [redFlagResult, setRedFlagResult] = useState<RedFlagResult | null>(null);
+  const [isOpeningMap, setIsOpeningMap] = useState(false);
 
   const selectedSymptom = symptoms.find((s: Symptom) => s.id === selectedSymptomId);
   
@@ -249,6 +252,21 @@ export default function SurveyPage() {
             <ArrowLeft size={24} />
             {locale === 'zh' ? '返回首页' : 'Back to Home'}
           </Link>
+          <button
+            onClick={async () => {
+              if (isOpeningMap) return;
+              setIsOpeningMap(true);
+              try {
+                await openNearbyInMaps({ type: 'hospital', locale, prefer: 'google' });
+              } finally {
+                setIsOpeningMap(false);
+              }
+            }}
+            className="mt-6 px-8 py-4 rounded-[2rem] border-2 font-black text-lg transition-all bg-white text-orange-800 border-orange-200 hover:border-orange-300 inline-flex items-center gap-3 w-fit mx-auto"
+          >
+            <Hospital size={22} />
+            {locale === 'zh' ? (isOpeningMap ? '正在打开地图...' : '打开附近医院') : isOpeningMap ? 'Opening map...' : 'Open Nearby Hospitals'}
+          </button>
         </motion.div>
       </div>
     );
@@ -482,10 +500,43 @@ export default function SurveyPage() {
                         <Pill size={20} />
                         {locale === 'zh' ? '打开大字版说明书' : 'Open Large-Print Guide'}
                       </Link>
-                      <button className="btn-sage w-full flex items-center justify-center gap-2">
-                        <ShoppingBag size={20} />
-                        {locale === 'zh' ? '查找最近药店' : 'Find Nearest Pharmacy'}
-                      </button>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button
+                          onClick={async () => {
+                            if (isOpeningMap) return;
+                            setIsOpeningMap(true);
+                            try {
+                              await openNearbyInMaps({
+                                type: 'pharmacy',
+                                locale,
+                                medicineName: res.medicine.generic_name ?? res.medicine.name,
+                                prefer: 'google'
+                              });
+                            } finally {
+                              setIsOpeningMap(false);
+                            }
+                          }}
+                          className="btn-sage w-full flex items-center justify-center gap-2"
+                        >
+                          <MapPin size={20} />
+                          {locale === 'zh' ? '附近药店' : 'Nearby Pharmacies'}
+                        </button>
+                        <button
+                          onClick={async () => {
+                            if (isOpeningMap) return;
+                            setIsOpeningMap(true);
+                            try {
+                              await openNearbyInMaps({ type: 'hospital', locale, prefer: 'google' });
+                            } finally {
+                              setIsOpeningMap(false);
+                            }
+                          }}
+                          className="btn-sage w-full flex items-center justify-center gap-2"
+                        >
+                          <Hospital size={20} />
+                          {locale === 'zh' ? '附近医院' : 'Nearby Hospitals'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
