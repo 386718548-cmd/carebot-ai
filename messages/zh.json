@@ -1,0 +1,27 @@
+{
+  "Index": {
+    "title": "智能医疗辅助系统",
+    "description": "针对常见健康问题获取专业的非处方药(OTC)建议。",
+    "start_survey": "开始症状问卷",
+    "how_it_works": "它是如何工作的",
+    "step1": "1. 描述您的症状",
+    "step2": "2. AI 分析严重程度及病史",
+    "step3": "3. 获取安全的 OTC 药品推荐",
+    "safety_warning": "警告：本工具仅供参考。严重情况请务必咨询医生。"
+  },
+  "Survey": {
+    "step": "步骤 {current}",
+    "next": "继续下一步",
+    "previous": "返回上一步",
+    "finish": "生成决策报告",
+    "safety_warning": "本系统提供的建议基于临床指南，不替代医生诊断。若症状持续或加重，请立即就医。"
+  },
+  "Medicines": {
+    "ingredients": "主要成分 (Active Ingredients)",
+    "dosage": "用法用量 (Dosage)",
+    "warnings": "临床警示 (Warnings)",
+    "side_effects": "副作用 (Side Effects)",
+    "availability": "附近药店库存",
+    "clinical_reference": "临床参考标准 (ICD/ATC)"
+  }
+}

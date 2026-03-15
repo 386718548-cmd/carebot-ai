@@ -1,0 +1,19 @@
+import createMiddleware from 'next-intl/middleware';
+import { NextRequest } from 'next/server';
+
+const intlMiddleware = createMiddleware({
+  // A list of all locales that are supported
+  locales: ['en', 'zh'],
+
+  // Used when no locale matches
+  defaultLocale: 'en'
+});
+
+export default function proxy(request: NextRequest) {
+  return intlMiddleware(request);
+}
+
+export const config = {
+  // Match only internationalized pathnames
+  matcher: ['/', '/(zh|en)/:path*', '/((?!api|_next/static|_next/image|favicon.ico|apple-touch-icon.png|.*\\.svg).*)']
+};

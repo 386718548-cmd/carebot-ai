@@ -1,0 +1,27 @@
+{
+  "Index": {
+    "title": "Smart Medical Assistant",
+    "description": "Get expert OTC recommendations for common health concerns.",
+    "start_survey": "Start Symptom Survey",
+    "how_it_works": "How it works",
+    "step1": "1. Tell us your symptoms",
+    "step2": "2. AI analyzes severity & history",
+    "step3": "3. Get safe OTC recommendations",
+    "safety_warning": "Warning: This tool is for informational purposes only. Consult a doctor for serious conditions."
+  },
+  "Survey": {
+    "step": "Step {current}",
+    "next": "Continue",
+    "previous": "Go Back",
+    "finish": "Generate Decision Report",
+    "safety_warning": "Recommendations are based on clinical guidelines and are not a substitute for professional diagnosis. If symptoms persist, see a doctor immediately."
+  },
+  "Medicines": {
+    "ingredients": "Active Ingredients",
+    "dosage": "Dosage & Usage",
+    "warnings": "Clinical Warnings",
+    "side_effects": "Side Effects",
+    "availability": "Nearby Availability",
+    "clinical_reference": "Clinical Standards (ICD/ATC)"
+  }
+}
