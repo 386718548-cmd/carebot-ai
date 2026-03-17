@@ -94,8 +94,8 @@ export const medicines: Medicine[] = [
     },
     dosage: {
       adult: { dosage: '500-1000mg', frequency: 'Every 4-6 hours', route: 'Oral' },
-      en: 'Take 1-2 tablets (500-1000mg) every 4-6 hours.',
-      zh: '每 4-6 小时服用 1-2 片 (500-1000mg)。'
+      en: 'Adults: 1000mg per dose (2x 500mg) is commonly used for tension-type headache. Take 500-1000mg every 4-6 hours as needed.',
+      zh: '成人紧张型头痛常用单次 1000mg（500mg×2）。按需每 4-6 小时 500-1000mg。'
     },
     side_effects: {
       common: ['Nausea'],
@@ -286,6 +286,95 @@ export const medicines: Medicine[] = [
     availability: [{ region: 'Global', stock: 2000, price: 10.99, currency: 'USD' }]
   },
   {
+    id: 'calcium-carbonate',
+    name: 'Calcium Carbonate (Antacid)',
+    generic_name: 'Calcium Carbonate',
+    aliases: ['Tums', '碳酸钙', '抗酸剂', 'Antacid'],
+    atc_code: 'A02AA04',
+    active_ingredients: ['Calcium Carbonate'],
+    indication_tags: ['symptom:stomach_pain', 'symptom:heartburn'],
+    contraindication_tags: ['exclusion:kidney_disease'],
+    indications: {
+      structured: {
+        symptomTags: ['stomach_pain', 'heartburn'],
+        description: {
+          en: 'Antacid for quick, short-term relief of heartburn and indigestion.',
+          zh: '抗酸剂，用于快速、短期缓解烧心与消化不良。'
+        }
+      }
+    },
+    contraindications: {
+      structured: {
+        conditions: ['kidney_disease'],
+        populations: [],
+        interactions: [{ drugClass: 'Tetracyclines/Quinolones', severity: 'moderate', action: 'Separate dosing by 2-4 hours' }]
+      },
+      severity: { 'kidney_disease': 'caution' },
+      en: ['Severe renal impairment'],
+      zh: ['严重肾功能受损']
+    },
+    dosage: {
+      adult: { dosage: '500-1000mg', frequency: 'As needed', route: 'Oral' },
+      en: 'Chew 1-2 tablets as needed. Follow the product label; do not exceed the maximum daily dose.',
+      zh: '按需嚼服 1-2 片。请遵循说明书，勿超过每日最大剂量。'
+    },
+    side_effects: {
+      common: ['Constipation', 'Bloating'],
+      en: ['Constipation', 'Bloating'],
+      zh: ['便秘', '腹胀']
+    },
+    evidence_level: 'B',
+    references: ['APAC FD Guideline 2023'],
+    last_updated: '2026-03-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 1500, price: 6.99, currency: 'USD' }]
+  },
+  {
+    id: 'domperidone-10mg',
+    name: 'Domperidone',
+    generic_name: 'Domperidone',
+    aliases: ['多潘立酮'],
+    atc_code: 'A03FA03',
+    active_ingredients: ['Domperidone'],
+    indication_tags: ['symptom:fullness', 'symptom:early_satiety'],
+    contraindication_tags: ['exclusion:elderly'],
+    indications: {
+      structured: {
+        symptomTags: ['fullness', 'early_satiety'],
+        description: {
+          en: 'Prokinetic option for functional dyspepsia symptoms such as postprandial fullness and early satiety.',
+          zh: '促动力药选项，用于餐后饱胀、早饱等功能性消化不良相关症状。'
+        }
+      }
+    },
+    contraindications: {
+      structured: {
+        conditions: ['qt_prolongation', 'arrhythmia'],
+        populations: ['elderly'],
+        interactions: [{ drugClass: 'QT-prolonging drugs', severity: 'severe', action: 'Avoid or specialist guidance' }]
+      },
+      severity: { 'elderly': 'caution' },
+      en: ['Risk of QT prolongation; caution in older adults'],
+      zh: ['可能延长 QT 间期；老年人慎用']
+    },
+    dosage: {
+      adult: { dosage: '10mg', frequency: 'Up to 3 times daily before meals', route: 'Oral' },
+      en: '10mg before meals, up to 3 times daily. Availability may differ by region; follow local guidance.',
+      zh: '餐前 10mg，每日最多 3 次。各地区可及性不同，请遵循当地用药指导。'
+    },
+    side_effects: {
+      common: ['Dry mouth', 'Abdominal cramps'],
+      rare: ['Arrhythmia (QT prolongation)'],
+      en: ['Dry mouth', 'Abdominal cramps', 'Rare: QT prolongation'],
+      zh: ['口干', '腹部痉挛', '罕见：QT 间期延长']
+    },
+    evidence_level: 'B',
+    references: ['APAC FD Guideline 2023'],
+    last_updated: '2026-03-15',
+    otc_class: 'B',
+    availability: [{ region: 'Selected Regions', stock: 300, price: 8.50, currency: 'USD' }]
+  },
+  {
     id: 'cetirizine-10mg',
     name: 'Cetirizine (Zyrtec)',
     generic_name: 'Cetirizine',
@@ -328,6 +417,50 @@ export const medicines: Medicine[] = [
     last_updated: '2026-03-05',
     otc_class: 'A',
     availability: [{ region: 'Global', stock: 2500, price: 12.99, currency: 'USD' }]
+  },
+  {
+    id: 'loratadine-10mg',
+    name: 'Loratadine (Claritin)',
+    generic_name: 'Loratadine',
+    aliases: ['Claritin', '氯雷他定', 'Loratadine'],
+    atc_code: 'R06AX13',
+    active_ingredients: ['Loratadine'],
+    indication_tags: ['symptom:rhinitis', 'symptom:urticaria', 'symptom:acute_urticaria', 'symptom:chronic_urticaria'],
+    contraindication_tags: ['exclusion:allergy'],
+    indications: {
+      structured: {
+        symptomTags: ['rhinitis', 'urticaria'],
+        description: {
+          en: 'Second-generation, typically non-sedating antihistamine for allergic rhinitis and urticaria.',
+          zh: '第二代抗组胺药（一般不嗜睡），用于过敏性鼻炎与荨麻疹。'
+        }
+      }
+    },
+    contraindications: {
+      structured: {
+        conditions: ['allergy'],
+        populations: [],
+        interactions: []
+      },
+      severity: { 'allergy': 'absolute' },
+      en: ['Hypersensitivity to loratadine'],
+      zh: ['对氯雷他定过敏']
+    },
+    dosage: {
+      adult: { dosage: '10mg', frequency: 'Once daily', route: 'Oral' },
+      en: 'Take 10mg once daily.',
+      zh: '每天 10mg 服用 1 次。'
+    },
+    side_effects: {
+      common: ['Headache', 'Dry mouth'],
+      en: ['Headache', 'Dry mouth'],
+      zh: ['头痛', '口干']
+    },
+    evidence_level: 'A',
+    references: ['SIAIP Rhinitis Consensus 2024', 'Urticaria Guide 2025'],
+    last_updated: '2026-03-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 2200, price: 11.99, currency: 'USD' }]
   },
   {
     id: 'fluticasone-nasal',
@@ -541,8 +674,8 @@ export const medicines: Medicine[] = [
     },
     dosage: {
       adult: { dosage: '200mg', frequency: 'Every 4-6 hours', route: 'Oral' },
-      en: 'Take 1 tablet (200mg) every 4-6 hours while symptoms persist.',
-      zh: '症状持续时，每 4-6 小时服用 1 片 (200mg)。'
+      en: 'For acute headache, adults commonly take 400mg per dose (2x 200mg). Take 200-400mg every 4-6 hours as needed.',
+      zh: '急性头痛成人常用单次 400mg（200mg×2）。按需每 4-6 小时 200-400mg。'
     },
     side_effects: {
       common: ['Stomach pain', 'Heartburn', 'Nausea'],
@@ -554,6 +687,50 @@ export const medicines: Medicine[] = [
     last_updated: '2026-02-10',
     otc_class: 'A',
     availability: [{ region: 'Global', stock: 1000, price: 12.50, currency: 'USD' }]
+  },
+  {
+    id: 'melatonin-sr',
+    name: 'Melatonin (Sustained Release)',
+    generic_name: 'Melatonin',
+    aliases: ['褪黑素缓释', 'Melatonin SR'],
+    atc_code: 'N05CH01',
+    active_ingredients: ['Melatonin'],
+    indication_tags: ['symptom:frequent_waking', 'symptom:poor_quality'],
+    contraindication_tags: ['exclusion:pregnant'],
+    indications: {
+      structured: {
+        symptomTags: ['frequent_waking', 'poor_quality'],
+        description: {
+          en: 'Sustained-release melatonin may help with sleep maintenance issues.',
+          zh: '褪黑素缓释剂型可用于睡眠维持困难。'
+        }
+      }
+    },
+    contraindications: {
+      structured: {
+        conditions: [],
+        populations: ['pregnant'],
+        interactions: [{ drugClass: 'Sedatives', severity: 'moderate', action: 'Additive sedation' }]
+      },
+      severity: { 'pregnant': 'caution', 'sedatives': 'caution' },
+      en: ['Pregnancy/breastfeeding: consult clinician', 'Additive sedation with other CNS depressants'],
+      zh: ['孕期/哺乳期：建议咨询医生', '与其他中枢抑制剂同用可能增加嗜睡']
+    },
+    dosage: {
+      adult: { dosage: '2mg', frequency: 'Once nightly', route: 'Oral' },
+      en: 'Take 2mg 30-60 minutes before bedtime.',
+      zh: '睡前 30-60 分钟服用 2mg。'
+    },
+    side_effects: {
+      common: ['Drowsiness', 'Vivid dreams'],
+      en: ['Drowsiness', 'Vivid dreams'],
+      zh: ['嗜睡', '梦境变得生动']
+    },
+    evidence_level: 'B',
+    references: ['INSOMNIA_2025'],
+    last_updated: '2026-03-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 900, price: 9.50, currency: 'USD' }]
   },
   {
     id: 'bailemian-capsule',
@@ -603,5 +780,742 @@ export const medicines: Medicine[] = [
     last_updated: '2026-01-15',
     otc_class: 'A',
     availability: [{ region: 'China', stock: 500, price: 45.00, currency: 'CNY' }]
+  },
+  // Additional medicines for insomnia
+  {
+    id: 'valerian-extract',
+    name: 'Valerian Root Extract',
+    generic_name: 'Valeriana officinalis extract',
+    aliases: ['缬草', 'Valerian'],
+    atc_code: 'N06CA',
+    active_ingredients: ['Valerian root extract'],
+    indication_tags: ['symptom:insomnia', 'symptom:falling_asleep'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['insomnia', 'falling_asleep'],
+        description: { en: 'Natural herbal remedy for mild insomnia and sleep anxiety.', zh: '缬草提取物，用于轻度失眠和入睡困难。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Typical dose: 400-900mg daily, usually taken 30 minutes to 2 hours before bedtime.',
+      zh: '常用剂量：400-900mg/日，睡前 30 分钟至 2 小时服用。'
+    },
+    side_effects: { common: [], en: ['Mild headache (rare)', 'Nausea (rare)'], zh: ['头痛(少见)', '恶心(少见)'] },
+    evidence_level: 'B',
+    references: ['European Herbal Pharmacopoeia'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 300, price: 15.00, currency: 'USD' }]
+  },
+  {
+    id: 'magnesium-supplement',
+    name: 'Magnesium Glycinate',
+    generic_name: 'Magnesium glycinate',
+    aliases: ['镁补充剂', 'Mag glycinate'],
+    atc_code: 'A12CC',
+    active_ingredients: ['Magnesium glycinate'],
+    indication_tags: ['symptom:insomnia', 'symptom:frequent_waking'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['insomnia'],
+        description: { en: 'Mineral supplement to support sleep quality and reduce nighttime awakenings.', zh: '矿物质补充，改善睡眠质量，减少夜间醒来。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: ['kidney_disease'], populations: [], interactions: [] },
+      severity: { 'kidney_disease': 'caution' },
+      en: ['Severe renal impairment'],
+      zh: ['严重肾功能不全']
+    },
+    dosage: {
+      en: 'Adults: 200-400mg daily, preferably in the evening.',
+      zh: '成人：200-400mg/日，最好在晚上服用。'
+    },
+    side_effects: { common: [], en: ['Mild laxative effect'], zh: ['轻微泻药效果'] },
+    evidence_level: 'B',
+    references: ['Magnesium and Sleep Review 2023'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 400, price: 12.00, currency: 'USD' }]
+  },
+  {
+    id: 'chamomile-extract',
+    name: 'Chamomile Extract Tea',
+    generic_name: 'Chamomilla recutita extract',
+    aliases: ['洋甘菊', 'Chamomile'],
+    atc_code: 'N06CA',
+    active_ingredients: ['Chamomile flower extract'],
+    indication_tags: ['symptom:insomnia', 'symptom:falling_asleep'],
+    contraindication_tags: ['exclusion:aller'],
+    indications: {
+      structured: {
+        symptomTags: ['insomnia'],
+        description: { en: 'Mild herbal tea for relaxation and gentle sleep support.', zh: '草本茶，用于放松和温和的睡眠支持。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: ['Known allergy to Asteraceae family'],
+      zh: ['对菊科植物过敏']
+    },
+    dosage: {
+      en: 'Brew 1 tea bag in hot water for 5-10 minutes. Drink 1-3 cups daily, especially before bedtime.',
+      zh: '用热水冲泡 5-10 分钟。每日 1-3 杯，尤其是睡前。'
+    },
+    side_effects: { common: [], en: [], zh: [] },
+    evidence_level: 'B',
+    references: ['Sleep Medicine Reviews'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 500, price: 8.00, currency: 'USD' }]
+  },
+  {
+    id: 'ltheanine-supplement',
+    name: 'L-Theanine',
+    generic_name: 'L-Theanine',
+    aliases: ['茶氨酸', 'Suntheanine'],
+    atc_code: 'N06AX',
+    active_ingredients: ['L-Theanine'],
+    indication_tags: ['symptom:insomnia', 'symptom:falling_asleep'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['insomnia'],
+        description: { en: 'Amino acid that promotes relaxation without drowsiness, supports sleep onset.', zh: '促进放松和睡眠的氨基酸，不引起昏昏欲睡。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Adults: 100-200mg once or twice daily, preferably in the afternoon/evening.',
+      zh: '成人：100-200mg，一日 1-2 次，最好在下午或晚上。'
+    },
+    side_effects: { common: [], en: [], zh: [] },
+    evidence_level: 'B',
+    references: ['L-Theanine and Sleep Quality 2024'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 300, price: 18.00, currency: 'USD' }]
+  },
+  // Additional medicines for headache
+  {
+    id: 'ibuprofen-200mg',
+    name: 'Ibuprofen 200mg',
+    generic_name: 'Ibuprofen',
+    aliases: ['布洛芬', 'Advil', 'Motrin'],
+    atc_code: 'M01AE01',
+    active_ingredients: ['Ibuprofen'],
+    indication_tags: ['symptom:headache', 'symptom:tension_type', 'symptom:mild_moderate'],
+    contraindication_tags: ['exclusion:stomach_ulcer', 'exclusion:asthma'],
+    indications: {
+      structured: {
+        symptomTags: ['headache'],
+        description: { en: 'NSAID for tension and mild-to-moderate headaches. Fast relief.', zh: '非甾体抗炎药，用于紧张型和轻中度头痛，见效快。' }
+      }
+    },
+    contraindications: {
+      structured: {
+        conditions: ['stomach_ulcer', 'asthma'],
+        populations: [],
+        interactions: [{ drugClass: 'Anticoagulants', severity: 'moderate', action: 'Increased bleeding risk' }]
+      },
+      severity: { 'stomach_ulcer': 'absolute', 'asthma': 'caution' },
+      en: ['Active peptic ulcer disease', 'Severe asthma'],
+      zh: ['活跃性消化性溃疡', '严重哮喘']
+    },
+    dosage: {
+      adult: { dosage: '200-400mg', frequency: 'Every 4-6 hours', route: 'Oral' },
+      en: 'Adults: 200-400mg every 4-6 hours. Maximum 1200mg per day for occasional use.',
+      zh: '成人：200-400mg，每 4-6 小时一次。偶尔使用不超过 1200mg/日。'
+    },
+    side_effects: {
+      common: ['Stomach upset', 'Heartburn'],
+      en: ['Gastrointestinal upset', 'Heartburn', 'Dizziness (rare)'],
+      zh: ['胃部不适', '烧心', '头晕(少见)']
+    },
+    evidence_level: 'A',
+    references: ['Headache Guidelines 2023'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 1000, price: 5.00, currency: 'USD' }]
+  },
+  {
+    id: 'naproxen-220mg',
+    name: 'Naproxen Sodium 220mg',
+    generic_name: 'Naproxen sodium',
+    aliases: ['萘普生', 'Aleve', '那普生'],
+    atc_code: 'M01AE02',
+    active_ingredients: ['Naproxen sodium'],
+    indication_tags: ['symptom:headache', 'symptom:tension_type', 'symptom:migraine_type'],
+    contraindication_tags: ['exclusion:stomach_ulcer', 'exclusion:asthma'],
+    indications: {
+      structured: {
+        symptomTags: ['headache'],
+        description: { en: 'Long-acting NSAID for moderate headache and migraine relief. Lasts up to 12 hours.', zh: '长效非甾体抗炎药，用于中度头痛和偏头痛，可维持 12 小时。' }
+      }
+    },
+    contraindications: {
+      structured: {
+        conditions: ['stomach_ulcer'],
+        populations: [],
+        interactions: [{ drugClass: 'Anticoagulants', severity: 'severe', action: 'Avoid concurrent use' }]
+      },
+      severity: { 'stomach_ulcer': 'absolute' },
+      en: ['Peptic ulcer disease', 'Asthma'],
+      zh: ['消化性溃疡', '哮喘']
+    },
+    dosage: {
+      adult: { dosage: '220-440mg', frequency: 'Every 8-12 hours', route: 'Oral' },
+      en: 'Adults: 220mg initially, then 220mg every 8-12 hours as needed. Max 660mg per day.',
+      zh: '成人：初始 220mg，然后每 8-12 小时 220mg。每日最多 660mg。'
+    },
+    side_effects: {
+      common: ['Stomach discomfort'],
+      en: ['Gastrointestinal upset', 'Dizziness', 'Allergic reactions (rare)'],
+      zh: ['胃部不适', '头晕', '过敏反应(少见)']
+    },
+    evidence_level: 'A',
+    references: ['NSAID Efficacy Comparison 2023'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 800, price: 8.00, currency: 'USD' }]
+  },
+  {
+    id: 'aspirin-325mg',
+    name: 'Aspirin 325mg',
+    generic_name: 'Acetylsalicylic acid',
+    aliases: ['阿司匹林', 'ASA'],
+    atc_code: 'N02BA01',
+    active_ingredients: ['Acetylsalicylic acid'],
+    indication_tags: ['symptom:headache', 'symptom:mild_moderate'],
+    contraindication_tags: ['exclusion:stomach_ulcer'],
+    indications: {
+      structured: {
+        symptomTags: ['headache'],
+        description: { en: 'Anti-inflammatory and mild pain reliever for tension headaches. Also has anticlotting benefits.', zh: '抗炎和轻度止痛，用于紧张型头痛。同时有抗凝作用。' }
+      }
+    },
+    contraindications: {
+      structured: {
+        conditions: ['stomach_ulcer'],
+        populations: [],
+        interactions: []
+      },
+      severity: { 'stomach_ulcer': 'caution' },
+      en: ['Ulcer disease', 'Bleeding disorders'],
+      zh: ['溃疡病', '出血性疾病']
+    },
+    dosage: {
+      en: 'Adults: 325-650mg every 4-6 hours as needed. Maximum 3000mg per day.',
+      zh: '成人：325-650mg，每 4-6 小时一次。每日最多 3000mg。'
+    },
+    side_effects: {
+      common: ['Stomach upset', 'Heartburn'],
+      en: ['GI upset', 'Heartburn', 'Allergic skin rash (rare)'],
+      zh: ['胃部不适', '烧心', '皮疹(少见)']
+    },
+    evidence_level: 'A',
+    references: ['Pain Management Guidelines'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 1200, price: 4.00, currency: 'USD' }]
+  },
+  // Additional medicines for cough
+  {
+    id: 'honey-lozenge',
+    name: 'Honey Cough Lozenge',
+    generic_name: 'Honey lozenges',
+    aliases: ['蜂蜜止咳糖', '蜂蜜'],
+    atc_code: 'R05CA',
+    active_ingredients: ['Honey', 'Lemon extract'],
+    indication_tags: ['symptom:cough', 'symptom:dry_cough'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['cough', 'dry_cough'],
+        description: { en: 'Natural honey-based cough relief. Soothing for throat irritation and dry cough.', zh: '天然蜂蜜止咳糖，舒缓咽喉刺激和干咳。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: ['infants'], interactions: [] },
+      severity: {},
+      en: ['Honey allergy', 'Infants under 1 year'],
+      zh: ['蜂蜜过敏', '1 岁以下婴幼儿']
+    },
+    dosage: {
+      en: 'Adults: 1 lozenge every 2-3 hours as needed. Children (over 3 years): same dosage.',
+      zh: '成人：每 2-3 小时含 1 粒，根据需要。3 岁以上儿童：同成人。'
+    },
+    side_effects: { common: [], en: [], zh: [] },
+    evidence_level: 'B',
+    references: ['Honey in Cough Management'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 600, price: 6.00, currency: 'USD' }]
+  },
+  {
+    id: 'nac-supplement',
+    name: 'N-Acetylcysteine (NAC)',
+    generic_name: 'N-Acetylcysteine',
+    aliases: ['NAC', 'N-乙酰半胱氨酸'],
+    atc_code: 'R05CB',
+    active_ingredients: ['N-Acetylcysteine'],
+    indication_tags: ['symptom:cough', 'symptom:wet_cough'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['cough', 'wet_cough'],
+        description: { en: 'Mucolytic agent that thins mucus and aids expectorant action. Good for wet cough.', zh: '粘液稀释剂，能稀释痰液，有利于咳嗽排痰。用于湿咳。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Adults: 200-600mg two to three times daily.',
+      zh: '成人：200-600mg，一日 2-3 次。'
+    },
+    side_effects: { common: [], en: ['Nausea', 'Vomiting (rare)'], zh: ['恶心', '呕吐(少见)'] },
+    evidence_level: 'B',
+    references: ['Expectorant Efficacy Studies'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 400, price: 14.00, currency: 'USD' }]
+  },
+  {
+    id: 'peppermint-oil',
+    name: 'Peppermint Oil Inhalation',
+    generic_name: 'Mentha piperita oil',
+    aliases: ['薄荷油', '薄荷精油'],
+    atc_code: 'R01AX',
+    active_ingredients: ['Peppermint oil'],
+    indication_tags: ['symptom:cough', 'symptom:dry_cough'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['cough'],
+        description: { en: 'Inhalation therapy for cough relief and nasal/throat soothing.', zh: '吸入疗法，缓解咳嗽，舒缓咽喉和鼻腔。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: ['Not for ingestion; inhalation use only'],
+      zh: ['仅供吸入使用，不可内服']
+    },
+    dosage: {
+      en: 'Inhale vapors from a few drops in hot water or use commercial inhalation product as directed.',
+      zh: '在热水中加入几滴，吸入蒸气；或按照商品说明使用。'
+    },
+    side_effects: { common: [], en: [], zh: [] },
+    evidence_level: 'B',
+    references: ['Aromatherapy Uses'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 200, price: 10.00, currency: 'USD' }]
+  },
+  // Additional medicines for GERD
+  {
+    id: 'omeprazole-20mg',
+    name: 'Omeprazole 20mg',
+    generic_name: 'Omeprazole',
+    aliases: ['奥美拉唑', 'Prilosec'],
+    atc_code: 'A02BC01',
+    active_ingredients: ['Omeprazole'],
+    indication_tags: ['symptom:gerd', 'symptom:heartburn'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['gerd', 'heartburn'],
+        description: { en: 'Proton pump inhibitor for typical GERD and heartburn. Reduces stomach acid production.', zh: '质子泵抑制剂，用于典型胃灼热和反流。减少胃酸分泌。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Adults: 20mg once daily for 4-8 weeks. Can extend to maintenance therapy.',
+      zh: '成人：20mg，一日一次，4-8 周为一疗程。可继续维持治疗。'
+    },
+    side_effects: {
+      common: ['Headache', 'Diarrhea'],
+      en: ['Headache', 'Diarrhea', 'Dizziness'],
+      zh: ['头痛', '腹泻', '头晕']
+    },
+    evidence_level: 'A',
+    references: ['GERD Management Guidelines 2023'],
+    last_updated: '2026-01-15',
+    otc_class: 'B',
+    availability: [{ region: 'Global', stock: 600, price: 20.00, currency: 'USD' }]
+  },
+  {
+    id: 'pantoprazole-40mg',
+    name: 'Pantoprazole 40mg',
+    generic_name: 'Pantoprazole',
+    aliases: ['泛酸', 'Protonix'],
+    atc_code: 'A02BC02',
+    active_ingredients: ['Pantoprazole'],
+    indication_tags: ['symptom:gerd', 'symptom:heartburn'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['gerd', 'heartburn'],
+        description: { en: 'Long-acting PPI for GERD symptoms and frequent heartburn relief.', zh: '长效质子泵抑制剂，用于胃灼热和频繁反流症状。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Adults: 40mg once daily in the morning for 4-8 weeks.',
+      zh: '成人：40mg，早晨一日一次，4-8 周为一疗程。'
+    },
+    side_effects: {
+      common: [],
+      en: ['Headache (rare)', 'Diarrhea (rare)'],
+      zh: ['头痛(少见)', '腹泻(少见)']
+    },
+    evidence_level: 'A',
+    references: ['PPI Efficacy Studies'],
+    last_updated: '2026-01-15',
+    otc_class: 'B',
+    availability: [{ region: 'Global', stock: 500, price: 22.00, currency: 'USD' }]
+  },
+  {
+    id: 'aluminum-hydroxide-gel',
+    name: 'Aluminum Hydroxide-Magnesium Hydroxide Gel',
+    generic_name: 'Aluminum hydroxide + Magnesium hydroxide',
+    aliases: ['氢和铝镁合剂', 'Antacid gel'],
+    atc_code: 'A02AD',
+    active_ingredients: ['Aluminum hydroxide', 'Magnesium hydroxide'],
+    indication_tags: ['symptom:gerd', 'symptom:heartburn', 'symptom:stomach_pain'],
+    contraindication_tags: ['exclusion:kidney_disease'],
+    indications: {
+      structured: {
+        symptomTags: ['gerd', 'heartburn'],
+        description: { en: 'Fast-acting antacid for immediate heartburn relief and acid neutralization.', zh: '速效抗酸剂，立即缓解烧心和中和胃酸。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: ['kidney_disease'], populations: [], interactions: [] },
+      severity: { 'kidney_disease': 'caution' },
+      en: ['Severe kidney disease'],
+      zh: ['严重肾病']
+    },
+    dosage: {
+      en: 'Adults: 5-10 mL (1-2 teaspoons) every 3-4 hours as needed, or after meals and at bedtime.',
+      zh: '成人：5-10mL（1-2 茶匙），每 3-4 小时一次；或饭后和睡前服用。'
+    },
+    side_effects: {
+      common: ['Constipation', 'Diarrhea'],
+      en: ['Constipation or diarrhea', 'Nausea'],
+      zh: ['便秘或腹泻', '恶心']
+    },
+    evidence_level: 'A',
+    references: ['Antacid Use Guidelines'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 700, price: 7.00, currency: 'USD' }]
+  },
+  // Additional medicines for allergic rhinitis
+  {
+    id: 'loratadine-10mg',
+    name: 'Loratadine 10mg',
+    generic_name: 'Loratadine',
+    aliases: ['氯雷他定', 'Claritin'],
+    atc_code: 'R06AX13',
+    active_ingredients: ['Loratadine'],
+    indication_tags: ['symptom:rhinitis', 'symptom:mild_rhinitis'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['rhinitis'],
+        description: { en: 'Non-drowsy antihistamine for allergic rhinitis relief. Second-generation antihistamine.', zh: '非镇静类抗组胺药，用于过敏性鼻炎。第二代抗组胺药。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Adults: 10mg once daily, preferably in the morning.',
+      zh: '成人：10mg，一日一次，最好在早上。'
+    },
+    side_effects: {
+      common: [],
+      en: ['Headache (rare)', 'Dry mouth'],
+      zh: ['头痛(少见)', '口干']
+    },
+    evidence_level: 'A',
+    references: ['Allergic Rhinitis Management 2023'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 800, price: 8.00, currency: 'USD' }]
+  },
+  {
+    id: 'mometasone-nasal',
+    name: 'Mometasone Furoate Nasal Spray',
+    generic_name: 'Mometasone furoate',
+    aliases: ['糠酸莫美他松', 'Nasonex'],
+    atc_code: 'R01AD',
+    active_ingredients: ['Mometasone furoate'],
+    indication_tags: ['symptom:rhinitis', 'symptom:severe_rhinitis'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['rhinitis'],
+        description: { en: 'Intranasal corticosteroid spray for moderate-severe allergic rhinitis. Local action with minimal systemic absorption.', zh: '鼻喷糖皮质激素，用于中重度过敏性鼻炎。局部作用，全身吸收少。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Adults: 2 sprays per nostril once daily (50 mcg per spray). Can increase to twice daily if needed.',
+      zh: '成人：每个鼻孔 2 次喷雾，一日一次（每次 50 微克）。必要时可增至一日两次。'
+    },
+    side_effects: {
+      common: [],
+      en: ['Nasal irritation', 'Headache (rare)'],
+      zh: ['鼻腔刺激', '头痛(少见)']
+    },
+    evidence_level: 'A',
+    references: ['Intranasal Corticosteroid Guidelines'],
+    last_updated: '2026-01-15',
+    otc_class: 'B',
+    availability: [{ region: 'Global', stock: 400, price: 25.00, currency: 'USD' }]
+  },
+  // Additional medicines for urticaria
+  {
+    id: 'cetirizine-10mg',
+    name: 'Cetirizine 10mg',
+    generic_name: 'Cetirizine HCl',
+    aliases: ['西替利嗪', 'Zyrtec'],
+    atc_code: 'R06AE07',
+    active_ingredients: ['Cetirizine'],
+    indication_tags: ['symptom:urticaria', 'symptom:acute_urticaria'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['urticaria'],
+        description: { en: 'Fast-acting antihistamine for acute urticaria and hives relief.', zh: '抗组胺药，快速缓解急性荨麻疹和皮疹瘙痒。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Adults: 10mg once daily. For severe cases, can increase to 20mg per day.',
+      zh: '成人：10mg，一日一次。严重病例可增至 20mg/日。'
+    },
+    side_effects: {
+      common: ['Drowsiness (minimal)'],
+      en: ['Mild drowsiness', 'Headache'],
+      zh: ['轻微嗜睡', '头痛']
+    },
+    evidence_level: 'A',
+    references: ['Urticaria Treatment Guidelines 2023'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 900, price: 9.00, currency: 'USD' }]
+  },
+  {
+    id: 'calamine-lotion',
+    name: 'Calamine Lotion',
+    generic_name: 'Calamine + Zinc oxide',
+    aliases: ['炉甘石', '炉甘石洗剂'],
+    atc_code: 'D02AX',
+    active_ingredients: ['Calamine', 'Zinc oxide'],
+    indication_tags: ['symptom:urticaria'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['urticaria'],
+        description: { en: 'Topical lotion for itching relief and skin soothing in urticaria and hives.', zh: '外用洗剂，缓解荨麻疹和皮疹瘙痒。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Apply topically to affected areas 2-3 times daily or as needed for itch relief.',
+      zh: '涂抹在患处，一日 2-3 次或根据需要以缓解瘙痒。'
+    },
+    side_effects: { common: [], en: [], zh: [] },
+    evidence_level: 'B',
+    references: ['Topical Pruritus Relief'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 500, price: 6.00, currency: 'USD' }]
+  },
+  {
+    id: 'diphenhydramine-itch-cream',
+    name: 'Diphenhydramine Itch Cream',
+    generic_name: 'Diphenhydramine topical',
+    aliases: ['苯海拉明膏', 'Anti-itch cream'],
+    atc_code: 'D04AB',
+    active_ingredients: ['Diphenhydramine'],
+    indication_tags: ['symptom:urticaria'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['urticaria'],
+        description: { en: 'Topical antihistamine cream for fast local relief of urticaria itching.', zh: '外用抗组胺膏，快速缓解荨麻疹瘙痒。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Apply thin layer to affected skin 2-3 times daily as needed.',
+      zh: '薄涂患处皮肤，一日 2-3 次，根据需要。'
+    },
+    side_effects: { common: [], en: ['Mild skin irritation (rare)'], zh: ['皮肤刺激(少见)'] },
+    evidence_level: 'B',
+    references: ['Topical Antihistamines'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 300, price: 12.00, currency: 'USD' }]
+  },
+  // Additional medicines for back pain
+  {
+    id: 'diclofenac-50mg',
+    name: 'Diclofenac 50mg',
+    generic_name: 'Diclofenac sodium',
+    aliases: ['双氯芬酸', 'Voltaren'],
+    atc_code: 'M01AB05',
+    active_ingredients: ['Diclofenac'],
+    indication_tags: ['symptom:back_pain', 'symptom:acute_back_pain'],
+    contraindication_tags: ['exclusion:stomach_ulcer'],
+    indications: {
+      structured: {
+        symptomTags: ['back_pain'],
+        description: { en: 'Potent NSAID with strong anti-inflammatory action for acute back pain relief.', zh: '强效非甾体抗炎药，抗炎作用强，用于急性腰痛。' }
+      }
+    },
+    contraindications: {
+      structured: {
+        conditions: ['stomach_ulcer'],
+        populations: [],
+        interactions: [{ drugClass: 'Anticoagulants', severity: 'moderate', action: 'Increased bleeding risk' }]
+      },
+      severity: { 'stomach_ulcer': 'caution' },
+      en: ['Peptic ulcer disease', 'Severe asthma'],
+      zh: ['消化性溃疡', '严重哮喘']
+    },
+    dosage: {
+      en: 'Adults: 50mg two to three times daily with meals. Do not exceed 150mg per day.',
+      zh: '成人：50mg，一日 2-3 次，随餐服用。每日不超过 150mg。'
+    },
+    side_effects: {
+      common: ['Stomach discomfort', 'Nausea'],
+      en: ['GI upset', 'Nausea', 'Dizziness'],
+      zh: ['胃部不适', '恶心', '头晕']
+    },
+    evidence_level: 'A',
+    references: ['Back Pain Management Guidelines 2023'],
+    last_updated: '2026-01-15',
+    otc_class: 'B',
+    availability: [{ region: 'Global', stock: 600, price: 15.00, currency: 'USD' }]
+  },
+  {
+    id: 'topical-nsaid-patch',
+    name: 'Topical NSAID Patch (Diclofenac)',
+    generic_name: 'Diclofenac transdermal patch',
+    aliases: ['双氯芬酸贴剂', '止痛贴'],
+    atc_code: 'M02AA15',
+    active_ingredients: ['Diclofenac'],
+    indication_tags: ['symptom:back_pain', 'symptom:acute_back_pain'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['back_pain'],
+        description: { en: 'Topical NSAID patch for localized back pain relief without systemic effects.', zh: '外用非甾体抗炎药贴，用于局部腰痛，无全身副作用。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Apply one patch to affected back area, once or twice daily for up to 8 hours at a time.',
+      zh: '贴于患处，一日 1-2 次，每次最多 8 小时。'
+    },
+    side_effects: { common: [], en: ['Skin irritation at application site'], zh: ['贴膜处皮肤刺激'] },
+    evidence_level: 'A',
+    references: ['Topical NSAID Efficacy'],
+    last_updated: '2026-01-15',
+    otc_class: 'B',
+    availability: [{ region: 'Global', stock: 400, price: 20.00, currency: 'USD' }]
+  },
+  {
+    id: 'muscle-relaxant-cream',
+    name: 'Muscle Relaxant Topical Cream',
+    generic_name: 'Menthol + Camphor + Salicylate',
+    aliases: ['肌肉放松膏', '万金油'],
+    atc_code: 'M02AX',
+    active_ingredients: ['Menthol', 'Camphor', 'Salicylate'],
+    indication_tags: ['symptom:back_pain', 'symptom:acute_back_pain'],
+    contraindication_tags: [],
+    indications: {
+      structured: {
+        symptomTags: ['back_pain'],
+        description: { en: 'Warming topical cream to relax muscles and ease back pain discomfort.', zh: '温暖外用膏，放松肌肉，缓解腰痛不适。' }
+      }
+    },
+    contraindications: {
+      structured: { conditions: [], populations: [], interactions: [] },
+      severity: {},
+      en: [],
+      zh: []
+    },
+    dosage: {
+      en: 'Apply generously to affected back area 2-3 times daily. Massage gently until absorbed.',
+      zh: '充分涂抹患处，一日 2-3 次。轻轻按摩至吸收。'
+    },
+    side_effects: { common: [], en: ['Warm sensation', 'Mild skin irritation (rare)'], zh: ['温热感', '皮肤刺激(少见)'] },
+    evidence_level: 'B',
+    references: ['Topical Muscle Relaxants'],
+    last_updated: '2026-01-15',
+    otc_class: 'A',
+    availability: [{ region: 'Global', stock: 500, price: 10.00, currency: 'USD' }]
   }
 ];

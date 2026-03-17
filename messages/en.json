@@ -13,8 +13,8 @@
     "step": "Step {current}",
     "next": "Continue",
     "previous": "Go Back",
-    "finish": "Generate Decision Report",
-    "safety_warning": "Recommendations are based on clinical guidelines and are not a substitute for professional diagnosis. If symptoms persist, see a doctor immediately."
+    "finish": "Generate Guidance",
+    "safety_warning": "Provides medication information and OTC guidance. Not a substitute for a clinician or pharmacist. If symptoms persist, seek care."
   },
   "Medicines": {
     "ingredients": "Active Ingredients",
@@ -23,5 +23,162 @@
     "side_effects": "Side Effects",
     "availability": "Nearby Availability",
     "clinical_reference": "Clinical Standards (ICD/ATC)"
+  },
+  "Home": {
+    "brand": {
+      "name": "MedAssist",
+      "tagline": "Professional • Auditable • Safety-first"
+    },
+    "nav": {
+      "value": "Value",
+      "steps": "3 Steps",
+      "proof": "Proof",
+      "faq": "FAQ"
+    },
+    "cta": {
+      "primary": "Start Symptom Check",
+      "secondary": "See 3-step Path",
+      "tertiary": "Open Medicine Guides"
+    },
+    "hero": {
+      "badge": "Safety & Audit-first",
+      "title": "Make OTC guidance provably trustworthy.",
+      "subtitle": "Built on evidence and structured rules, with auditable traces and safety-first defaults — so each step from symptom intake to recommendations is explainable and reviewable.",
+      "caption1": "Least-privilege by default",
+      "caption2": "Traceable rule hits",
+      "caption3": "Red-flag first",
+      "visual": {
+        "kicker": "Evidence Chain",
+        "title": "Input → Rules → Output",
+        "badge": "Exportable",
+        "node1": { "subtitle": "Input", "title": "Symptoms & basics" },
+        "node2": { "subtitle": "Rules", "title": "Guideline rules (auditable)" },
+        "node3": { "subtitle": "Output", "title": "Recs + risks + trace" },
+        "metric1": "ruleId",
+        "metric2": "guidelineId",
+        "metric3": "evidence"
+      }
+    },
+    "trust": {
+      "badge1": "Audit-friendly",
+      "badge2": "Traceable",
+      "badge3": "Safety-first",
+      "badge4": "Verifiable delivery"
+    },
+    "pillars": {
+      "kicker": "3 Pillars",
+      "title": "Professional / Auditable / Safety-first",
+      "desc": "Not “trust me” — but “check me”. We align recommendations to verifiable signals and prioritize escalation when risk is high.",
+      "cards": {
+        "professional": {
+          "title": "Professional",
+          "desc": "Turn complex symptoms and OTC decisions into clear, actionable steps.",
+          "b1": "Clear boundaries by symptom system",
+          "b2": "Layered checks: red flags / contraindications / interactions",
+          "b3": "Structured output with rationale"
+        },
+        "auditable": {
+          "title": "Auditable",
+          "desc": "Not “I think so”, but “here is the basis”.",
+          "b1": "Each recommendation includes rule hits",
+          "b2": "References include guidelineId and evidence",
+          "b3": "Key decisions are reproducible"
+        },
+        "secure": {
+          "title": "Safety-first",
+          "desc": "Default to the safer side — prevent harm first.",
+          "b1": "Red flags block OTC guidance and suggest care",
+          "b2": "Minimum necessary information",
+          "b3": "Contraindications/interactions filtered first"
+        }
+      }
+    },
+    "steps": {
+      "kicker": "3-step Path",
+      "title": "Three steps: input → verify → act safely",
+      "desc": "Each step has clear inputs, outputs, and auditable traces — easy to review and explain.",
+      "cards": {
+        "s1": {
+          "step": "Step 01",
+          "title": "Input (symptoms/meds)",
+          "desc": "Start with symptom check or a medicine guide to clarify the goal.",
+          "input": "Complaint, associated symptoms, duration, meds history (optional)",
+          "output": "Structured tags (symptomTags) and basics",
+          "eta": "1–2 min",
+          "evidence": "Stored",
+          "deliverable": "Deliverable: reusable input structure"
+        },
+        "s2": {
+          "step": "Step 02",
+          "title": "Auditable verification",
+          "desc": "Rules generate guidance and expose why each option matches.",
+          "input": "Rule sets + guideline metadata (guidelineId)",
+          "output": "Recommendations + risk notes + rule-hit trace",
+          "eta": "Seconds",
+          "evidence": "Reproducible",
+          "deliverable": "Deliverable: audit.triggered_rules"
+        },
+        "s3": {
+          "step": "Step 03",
+          "title": "Act safely",
+          "desc": "Use guides, set reminders, or seek care when red flags exist.",
+          "input": "Recommendations and warnings",
+          "output": "Next actions (guide/reminder/care)",
+          "eta": "Now",
+          "evidence": "Exportable",
+          "deliverable": "Deliverable: explainable next actions"
+        }
+      }
+    },
+    "proof": {
+      "kicker": "Proof",
+      "title": "You get not only conclusions, but evidence.",
+      "desc": "We make key results traceable and reproducible so you can review them with confidence.",
+      "left": {
+        "i1": "Event timeline (what you entered, what the system did)",
+        "i2": "Rule-hit records (ruleId / system / type)",
+        "i3": "Basis references (guidelineId + evidence)",
+        "i4": "Exportable structured output"
+      },
+      "right": {
+        "kicker": "Defaults",
+        "title": "Safety-first (examples)",
+        "i1": "Red flags block OTC suggestions and recommend care",
+        "i2": "Contraindications/interactions filtered first",
+        "i3": "Minimum necessary information",
+        "i4": "Clear boundary: not a diagnosis"
+      }
+    },
+    "ctaBlock": {
+      "kicker": "Get Started",
+      "title": "Turn “safety and audit” into a usable experience.",
+      "desc": "Start a symptom check and see the rule-hit trace and risk notes behind each option."
+    },
+    "faq": {
+      "kicker": "FAQ",
+      "title": "Frequently asked questions",
+      "desc": "Clear answers for professional, auditable, safety-first guidance.",
+      "q1": "What does “auditable” mean here?",
+      "a1": "We attach ruleId, guidelineId and evidence descriptions to recommendations where possible, forming a trace you can review.",
+      "q2": "Why do you suggest seeking care first?",
+      "a2": "With red flags or high-risk combinations, OTC guidance should not replace clinical evaluation; we block and suggest care.",
+      "q3": "What information do you collect?",
+      "a3": "Only what is necessary for the current decision. Sensitive inputs are requested only when needed.",
+      "q4": "Can I share the results?",
+      "a4": "Outputs are structured and include risks and traces, making them easy to copy or screenshot for family or clinicians."
+    },
+    "disclaimer": {
+      "title": "Important",
+      "body": "This site provides health information and OTC references and is not medical diagnosis or prescription advice. If you take prescription meds, are pregnant/breastfeeding, are a child, or have chronic conditions, consult a clinician or pharmacist."
+    },
+    "footer": {
+      "desc": "An auditable and explainable experience for everyday symptoms and OTC guidance.",
+      "links": "Quick Links",
+      "link1": "Start symptom check",
+      "link2": "Medicine guides",
+      "safety": "Safety",
+      "safetyDesc": "We emphasize red-flag blocking, contraindication and interaction checks, and continuous refinement.",
+      "copyright": "© 2026 MedAssist. For informational use only; not medical advice."
+    }
   }
 }

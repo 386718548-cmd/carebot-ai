@@ -46,36 +46,68 @@ export const knowledgeBase: KnowledgeBaseMeta = {
       redFlags: ['呼吸困难', '咯血', '胸痛', '发热>39℃', '吞咽困难', '声音嘶哑>2周']
     },
     {
+      id: 'ACCP_COUGH_2006',
+      name: 'ACCP 感冒咳嗽临床实践指南（经典）',
+      source: 'ACCP',
+      year: 2006,
+      scope: { symptomSystem: 'cough', population: 'general' },
+      notes: '急性咳嗽多与普通感冒相关，强调对症治疗与病程分型。'
+    },
+    {
       id: 'HEADACHE_2026',
-      name: '住院患者头痛管理共识',
-      source: '美国区域麻醉与疼痛医学学会',
+      name: 'AHS 急诊偏头痛指南（急性期）',
+      source: 'American Headache Society (AHS)',
       year: 2026,
       scope: { symptomSystem: 'headache', population: 'general' },
-      keyPoints: { statements: 12, recommendations: 17 }
+      notes: '偏头痛急性期治疗分层与阶梯策略。'
+    },
+    {
+      id: 'VADOD_HEADACHE_2024',
+      name: 'VA/DoD 头痛管理指南',
+      source: 'VA/DoD',
+      year: 2024,
+      scope: { symptomSystem: 'headache', population: 'general' },
+      notes: '紧张型头痛与偏头痛的一线非处方药与复方选项。'
+    },
+    {
+      id: 'PEDS_MIGRAINE_2026',
+      name: '儿童偏头痛管理系统综述',
+      source: 'Pediatric Headache Guideline Review',
+      year: 2026,
+      scope: { symptomSystem: 'headache', population: 'pediatric' },
+      notes: '强调对乙酰氨基酚与布洛芬为儿童急性偏头痛一线选择。'
     },
     {
       id: 'LBP_2024',
-      name: '下背痛指南',
-      source: 'KNGF',
+      name: '下背痛治疗综述（非特异性下背痛）',
+      source: 'Low Back Pain Review',
       year: 2024,
       scope: { symptomSystem: 'low_back_pain', population: 'general' },
       notes: '按低/中/高风险预后分层，强调尽量活动，避免阿片类。'
     },
     {
       id: 'GERD_2023',
-      name: '中国老年人 GERD 专家共识',
-      source: '中华医学会老年医学分会',
+      name: 'GERD 指南一致性综述',
+      source: 'Guideline Concordance Review',
       year: 2023,
-      scope: { symptomSystem: 'gerd', population: 'elderly' },
-      notes: '关注老年人症状不典型与多药联用风险。'
+      scope: { symptomSystem: 'gerd', population: 'general' },
+      notes: '多部指南一致推荐 PPI/H2RA；吞咽困难、消化道出血等应立即就医。'
+    },
+    {
+      id: 'APAC_FD_2023',
+      name: '亚太功能性消化不良指南',
+      source: 'APAC FD Guideline',
+      year: 2023,
+      scope: { symptomSystem: 'gerd', population: 'general' },
+      notes: '强调 FD 与 GERD/IBS 重叠综合征管理；餐后饱胀/早饱等分型。'
     },
     {
       id: 'AR_2024',
-      name: '国际中医临床实践指南：变应性鼻炎',
-      source: '世界中医药学会联合会',
+      name: '意大利 SIAIP 变应性鼻炎德尔菲共识',
+      source: 'SIAIP',
       year: 2024,
       scope: { symptomSystem: 'allergic_rhinitis', population: 'general' },
-      notes: '中西医结合框架，可作为偏好选项。'
+      notes: '中重度持续性优先鼻用激素；轻中度可用二代抗组胺药；可联合治疗。'
     },
     {
       id: 'CSU_2025',
@@ -87,4 +119,3 @@ export const knowledgeBase: KnowledgeBaseMeta = {
     }
   ]
 };
-

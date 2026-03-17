@@ -2,6 +2,12 @@ import { z } from 'zod';
 import { medicines } from '@/data/medicines';
 import { detectRedFlags, matchDrugs } from '@/lib/decision-engine';
 import { evaluateHeadacheRules } from '@/lib/rules/headache';
+import { evaluateLowBackPainRules } from '@/lib/rules/low-back-pain';
+import { evaluateCoughRules } from '@/lib/rules/cough';
+import { evaluateGerdRules } from '@/lib/rules/gerd';
+import { evaluateAllergicRhinitisRules } from '@/lib/rules/allergic-rhinitis';
+import { evaluateUrticariaRules } from '@/lib/rules/urticaria';
+import { evaluateInsomniaRules } from '@/lib/rules/insomnia';
 
 const stringArray = z.array(z.string()).default([]);
 
@@ -94,9 +100,10 @@ function mapSymptomToTags(primary?: string, details?: Record<string, any>): { sy
   const historyTags: string[] = [];
   const severityWeights: Record<string, number> = {};
   const p = (primary || '').trim().toLowerCase();
+  const normalizedPrimary = p.replace(/\s+/g, '_');
   const d = details || {};
 
-  if (p === 'headache') {
+  if (normalizedPrimary === 'headache') {
     symptomTags.push('symptom:headache');
     if (d.type === 'tension') symptomTags.push('symptom:tension_type');
     if (d.type === 'migraine') symptomTags.push('symptom:migraine_type');
@@ -105,6 +112,35 @@ function mapSymptomToTags(primary?: string, details?: Record<string, any>): { sy
     if (d.thunderclap === true) symptomTags.push('symptom:thunderclap');
     if (d.fever_stiff_neck === true) symptomTags.push('symptom:stiff_neck');
     if (d.stroke_signs === true) symptomTags.push('symptom:stroke_signs');
+  }
+
+  // Ensure consolidated symptom identity tags are always present for primary symptom routes
+  if (normalizedPrimary === 'headache') {
+    symptomTags.push('symptom:headache');
+  }
+  if (normalizedPrimary === 'low_back_pain' || normalizedPrimary === 'low back pain' || normalizedPrimary === 'back_pain' || normalizedPrimary === 'back pain') {
+    symptomTags.push('symptom:back_pain');
+  }
+  if (normalizedPrimary === 'cough' || normalizedPrimary === 'cold') {
+    symptomTags.push('symptom:cough');
+  }
+  if (normalizedPrimary === 'gerd' || normalizedPrimary === 'digestive' || normalizedPrimary === 'gastroesophageal_reflux_disease') {
+    symptomTags.push('symptom:heartburn');
+    symptomTags.push('symptom:gerd');
+  }
+  if (normalizedPrimary === 'allergic_rhinitis' || normalizedPrimary === 'rhinitis' || normalizedPrimary === 'allergic rhinitis') {
+    symptomTags.push('symptom:rhinitis');
+  }
+  if (normalizedPrimary === 'urticaria') {
+    symptomTags.push('symptom:urticaria');
+  }
+  if (normalizedPrimary === 'insomnia') {
+    symptomTags.push('symptom:insomnia');
+    // no further details means generic insomnia case; will still evaluate in insomnia engine
+  }
+
+  if (normalizedPrimary === 'low_back_pain' || normalizedPrimary === 'back_pain' || symptomTags.some((t) => t.includes('back_pain'))) {
+    // keep existing logic below
   }
 
   if (p === 'low_back_pain' || p === 'back_pain') {
@@ -122,6 +158,12 @@ function mapSymptomToTags(primary?: string, details?: Record<string, any>): { sy
   if (p === 'cough' || p === 'cold') {
     if (d.cough_type === 'dry') symptomTags.push('symptom:dry_cough');
     if (d.cough_type === 'productive') symptomTags.push('symptom:wet_cough');
+    const days = typeof d.duration_days === 'number' ? d.duration_days : undefined;
+    if (typeof days === 'number') {
+      if (days < 21) symptomTags.push('symptom:acute_cough');
+      else if (days < 56) symptomTags.push('symptom:subacute_cough');
+      else symptomTags.push('symptom:chronic_cough');
+    }
     if (d.breathless === true) symptomTags.push('symptom:breathless');
     if (d.haemoptysis === true) symptomTags.push('symptom:haemoptysis');
     if (d.chest_pain === true) symptomTags.push('symptom:chest_pain');
@@ -174,25 +216,35 @@ export function clinicalDecision(input: ClinicalDecisionRequest): ClinicalDecisi
   const comorbidityTags = input.tags?.comorbidityTags?.length ? input.tags.comorbidityTags : [];
   const historyTags = input.tags?.historyTags?.length ? input.tags.historyTags : mapped.historyTags;
   const currentMeds = normalizeDrugClasses(input.patient?.medications || []);
+  const ruleTags = Array.from(new Set([...symptomTags, ...exclusions, ...causeTags, ...comorbidityTags, ...historyTags]));
 
-  const isHeadacheCase =
-    (input.symptoms?.primary || '').trim().toLowerCase() === 'headache' || symptomTags.includes('symptom:headache');
-  if (isHeadacheCase) {
-    const evalOut = evaluateHeadacheRules({ symptomTags });
-    if (evalOut.redFlags.length > 0) {
+  // Check for critical red flags first, before any symptom-specific rules
+  const redFlags = detectRedFlags(Array.from(new Set([...symptomTags, ...exclusions, ...causeTags, ...comorbidityTags, ...historyTags])));
+  if (redFlags.isCritical) {
+    return {
+      red_flags: redFlags.alerts.zh.map(message => ({ message })),
+      recommendations: [],
+      referral: 'emergency',
+      disclaimer: '本推荐基于临床指南生成，仅供参考，不替代医生诊断。'
+    };
+  }
+
+  const runRuleBased = (evalOut: { redFlags?: any[]; recommendations: any[] }) => {
+    const redFlags = (evalOut as any).redFlags as { hit: any; action: any }[] | undefined;
+    if (redFlags && redFlags.length > 0) {
       return {
-        red_flags: evalOut.redFlags.map(x => ({
+        red_flags: redFlags.map((x) => ({
           system: x.hit.system,
           message: x.action.message.zh
         })),
         recommendations: [],
         referral: 'emergency',
         disclaimer: '本推荐基于临床指南生成，仅供参考，不替代医生诊断。'
-      };
+      } satisfies ClinicalDecisionResponse;
     }
 
-    const candidateIds = Array.from(new Set(evalOut.recommendations.map(x => x.action.medicineId)));
-    const candidateMeds = medicines.filter(m => candidateIds.includes(m.id));
+    const candidateIds = Array.from(new Set(evalOut.recommendations.map((x: any) => x.action.medicineId)));
+    const candidateMeds = medicines.filter((m) => candidateIds.includes(m.id));
     const safetyFiltered = matchDrugs(
       symptomTags,
       exclusions,
@@ -204,7 +256,7 @@ export function clinicalDecision(input: ClinicalDecisionRequest): ClinicalDecisi
       mapped.severityWeights
     );
 
-    const hitByMedId = new Map<string, typeof evalOut.recommendations>();
+    const hitByMedId = new Map<string, any[]>();
     for (const r of evalOut.recommendations) {
       const list = hitByMedId.get(r.action.medicineId) || [];
       list.push(r);
@@ -213,8 +265,8 @@ export function clinicalDecision(input: ClinicalDecisionRequest): ClinicalDecisi
 
     return {
       red_flags: [],
-      recommendations: safetyFiltered.map(r => {
-        const hits = (hitByMedId.get(r.medicine.id) || []).map(h => ({
+      recommendations: safetyFiltered.map((r) => {
+        const hits = (hitByMedId.get(r.medicine.id) || []).map((h) => ({
           ruleId: h.hit.ruleId,
           system: h.hit.system,
           type: h.hit.type,
@@ -223,10 +275,7 @@ export function clinicalDecision(input: ClinicalDecisionRequest): ClinicalDecisi
           evidence: h.hit.evidence.description
         }));
 
-        const baseScore = Math.max(
-          0,
-          ...(hitByMedId.get(r.medicine.id) || []).map(h => h.action.baseScore)
-        );
+        const baseScore = Math.max(0, ...(hitByMedId.get(r.medicine.id) || []).map((h) => h.action.baseScore));
 
         return {
           drugId: r.medicine.id,
@@ -242,42 +291,44 @@ export function clinicalDecision(input: ClinicalDecisionRequest): ClinicalDecisi
       }),
       referral: null,
       disclaimer: '本推荐基于临床指南生成，仅供参考，不替代医生诊断。'
-    };
+    } satisfies ClinicalDecisionResponse;
+  };
+
+  const isHeadacheCase =
+    (input.symptoms?.primary || '').trim().toLowerCase() === 'headache' || symptomTags.includes('symptom:headache');
+  if (isHeadacheCase) {
+    return runRuleBased(evaluateHeadacheRules({ tags: ruleTags }) as any);
   }
 
-  const redFlags = detectRedFlags(symptomTags);
-  if (redFlags.isCritical) {
-    return {
-      red_flags: redFlags.alerts.zh.map(message => ({ message })),
-      recommendations: [],
-      referral: 'emergency',
-      disclaimer: '本推荐基于临床指南生成，仅供参考，不替代医生诊断。'
-    };
+  const primary = (input.symptoms?.primary || '').trim().toLowerCase();
+  if (primary === 'low_back_pain' || primary === 'back_pain' || symptomTags.some((t) => t.includes('back_pain'))) {
+    return runRuleBased(evaluateLowBackPainRules({ tags: ruleTags }) as any);
   }
 
-  const matched = matchDrugs(
-    symptomTags,
-    exclusions,
-    causeTags,
-    comorbidityTags,
-    currentMeds,
-    historyTags,
-    medicines,
-    mapped.severityWeights
-  );
+  if (primary === 'cough' || primary === 'cold' || symptomTags.some((t) => t.includes('cough'))) {
+    return runRuleBased(evaluateCoughRules({ tags: ruleTags }) as any);
+  }
 
+  if (primary === 'gerd' || primary === 'digestive' || symptomTags.some((t) => ['symptom:heartburn', 'symptom:stomach_pain', 'symptom:fullness', 'symptom:early_satiety'].includes(t))) {
+    return runRuleBased(evaluateGerdRules({ tags: ruleTags }) as any);
+  }
+
+  if (primary === 'allergic_rhinitis' || primary === 'rhinitis' || symptomTags.includes('symptom:rhinitis') || symptomTags.includes('symptom:mild_rhinitis') || symptomTags.includes('symptom:severe_rhinitis')) {
+    return runRuleBased({ recommendations: evaluateAllergicRhinitisRules({ tags: ruleTags }).recommendations } as any);
+  }
+
+  if (primary === 'urticaria' || symptomTags.includes('symptom:urticaria')) {
+    return runRuleBased({ recommendations: evaluateUrticariaRules({ tags: ruleTags }).recommendations } as any);
+  }
+
+  if (primary === 'insomnia' || symptomTags.includes('symptom:insomnia') || symptomTags.includes('symptom:falling_asleep') || symptomTags.includes('symptom:frequent_waking') || symptomTags.includes('symptom:poor_quality')) {
+    return runRuleBased({ recommendations: evaluateInsomniaRules({ tags: ruleTags }).recommendations } as any);
+  }
+
+  // If no specific symptom rule matched, return empty recommendations
   return {
     red_flags: [],
-    recommendations: matched.map(r => ({
-      drugId: r.medicine.id,
-      drugName: r.medicine.name,
-      match_score: Number(r.score.toFixed(2)),
-      dosing: { en: r.medicine.dosage.en, zh: r.medicine.dosage.zh },
-      evidence: { level: r.medicine.evidence_level, references: r.medicine.references },
-      risk_level: r.riskLevel,
-      warnings: { en: r.warnings.en, zh: r.warnings.zh },
-      stepped_therapy_note: r.steppedTherapyNote
-    })),
+    recommendations: [],
     referral: null,
     disclaimer: '本推荐基于临床指南生成，仅供参考，不替代医生诊断。'
   };

@@ -44,7 +44,7 @@ export interface AuditableRule {
 }
 
 export interface HeadacheRuleEvalInput {
-  symptomTags: string[];
+  tags: string[];
 }
 
 export interface HeadacheRuleEvalOutput {
@@ -116,6 +116,25 @@ const headacheRules: AuditableRule[] = [
       description: 'Neurologic deficits with headache may indicate serious intracranial pathology.'
     }
   },
+  // Generic headache fallback rule
+  {
+    ruleId: 'HEADACHE_GEN',
+    system: 'headache',
+    type: 'indication',
+    priority: 80,
+    name: '通用头痛推荐：OTC止痛药多选项',
+    when: { anyOf: ['symptom:headache'] },
+    actions: [
+      { kind: 'recommend', medicineId: 'ibuprofen-200mg', baseScore: 0.9 },
+      { kind: 'recommend', medicineId: 'acetaminophen-500mg', baseScore: 0.85 },
+      { kind: 'recommend', medicineId: 'naproxen-220mg', baseScore: 0.8 },
+      { kind: 'recommend', medicineId: 'aspirin-325mg', baseScore: 0.75 }
+    ],
+    evidence: {
+      guidelineId: 'HEADACHE_2026',
+      description: 'Common OTC pain relief options for mild to moderate headache.'
+    }
+  },
   {
     ruleId: 'HEADACHE_IND_001',
     system: 'headache',
@@ -123,7 +142,8 @@ const headacheRules: AuditableRule[] = [
     priority: 100,
     name: '紧张型头痛一线：布洛芬',
     when: {
-      allOf: ['symptom:headache', 'symptom:tension_type', 'symptom:bilateral', 'symptom:mild_moderate']
+      allOf: ['symptom:headache', 'symptom:tension_type', 'symptom:bilateral', 'symptom:mild_moderate'],
+      noneOf: ['symptom:nausea', 'symptom:sensitivity', 'symptom:aura']
     },
     actions: [
       {
@@ -133,8 +153,8 @@ const headacheRules: AuditableRule[] = [
       }
     ],
     evidence: {
-      guidelineId: 'HEADACHE_2026',
-      description: 'NSAIDs are first-line options for tension-type headache.'
+      guidelineId: 'VADOD_HEADACHE_2024',
+      description: 'Tension-type headache first-line OTC option per VA/DoD guideline.'
     }
   },
   {
@@ -144,7 +164,8 @@ const headacheRules: AuditableRule[] = [
     priority: 90,
     name: '紧张型头痛一线：对乙酰氨基酚',
     when: {
-      allOf: ['symptom:headache', 'symptom:tension_type', 'symptom:bilateral', 'symptom:mild_moderate']
+      allOf: ['symptom:headache', 'symptom:tension_type', 'symptom:bilateral', 'symptom:mild_moderate'],
+      noneOf: ['symptom:nausea', 'symptom:sensitivity', 'symptom:aura']
     },
     actions: [
       {
@@ -154,8 +175,8 @@ const headacheRules: AuditableRule[] = [
       }
     ],
     evidence: {
-      guidelineId: 'HEADACHE_2026',
-      description: 'Acetaminophen is a first-line option for tension-type headache.'
+      guidelineId: 'VADOD_HEADACHE_2024',
+      description: 'Tension-type headache first-line OTC option per VA/DoD guideline.'
     }
   },
   {
@@ -176,8 +197,8 @@ const headacheRules: AuditableRule[] = [
       }
     ],
     evidence: {
-      guidelineId: 'HEADACHE_2026',
-      description: 'NSAIDs are first-line for acute migraine in appropriate patients.'
+      guidelineId: 'VADOD_HEADACHE_2024',
+      description: 'Acute migraine first-line OTC option per VA/DoD guideline.'
     }
   },
   {
@@ -198,8 +219,8 @@ const headacheRules: AuditableRule[] = [
       }
     ],
     evidence: {
-      guidelineId: 'HEADACHE_2026',
-      description: 'Acetaminophen is an option for acute migraine pain relief.'
+      guidelineId: 'VADOD_HEADACHE_2024',
+      description: 'Acute migraine OTC option per VA/DoD guideline.'
     }
   },
   {
@@ -221,8 +242,8 @@ const headacheRules: AuditableRule[] = [
       }
     ],
     evidence: {
-      guidelineId: 'HEADACHE_2026',
-      description: 'Combination analgesics may be used in selected acute migraine cases.'
+      guidelineId: 'VADOD_HEADACHE_2024',
+      description: 'VA/DoD includes acetaminophen/aspirin/caffeine combination as an acute migraine option.'
     }
   }
 ];
@@ -241,7 +262,7 @@ export function evaluateHeadacheRules(input: HeadacheRuleEvalInput): HeadacheRul
   const recommendations: HeadacheRuleEvalOutput['recommendations'] = [];
 
   for (const rule of sorted) {
-    if (!matchesWhen(input.symptomTags, rule.when)) continue;
+    if (!matchesWhen(input.tags, rule.when)) continue;
 
     const baseHit: RuleHit = {
       ruleId: rule.ruleId,
@@ -263,4 +284,3 @@ export function evaluateHeadacheRules(input: HeadacheRuleEvalInput): HeadacheRul
 
   return { redFlags, recommendations };
 }
-

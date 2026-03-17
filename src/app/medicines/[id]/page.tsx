@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, use } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, CirclePlay, CircleStop, Volume2, ShieldAlert, CheckCircle2, AlertTriangle, Bell, Plus, Trash2 } from 'lucide-react';
 import { medicines } from '@/data/medicines';
@@ -114,11 +114,18 @@ function saveReminders(reminders: Reminder[]) {
   window.localStorage.setItem(REMINDERS_KEY, JSON.stringify(reminders));
 }
 
-export default function MedicineDetailPage({ params }: { params: { id: string } }) {
+export default function MedicineDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { locale } = useLocale();
-  const decodedId = decodeURIComponent(params.id);
-  const medicine = useMemo(() => medicines.find((m) => m.id === decodedId) ?? null, [decodedId]);
-  const { suggestions } = useMemo(() => searchMedicines(decodedId, medicines, locale), [decodedId, locale]);
+  const { id } = use(params);
+  const decodedId = decodeURIComponent(id || '');
+  const normalizedQuery = decodedId.trim();
+  const hasMeaningfulQuery = normalizedQuery.length > 0 && !['undefined', 'null'].includes(normalizedQuery.toLowerCase());
+  const displayQuery = hasMeaningfulQuery ? normalizedQuery : locale === 'zh' ? '该药品' : 'this medicine';
+  const medicine = medicines.find((m) => m.id === normalizedQuery) || null;
+  const suggestionMedicines = useMemo(
+    () => (hasMeaningfulQuery ? searchMedicines(normalizedQuery, medicines, locale).suggestions : []),
+    [hasMeaningfulQuery, normalizedQuery, locale]
+  );
 
   const [fontScale, setFontScale] = useState<FontScale>('xl');
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -128,6 +135,7 @@ export default function MedicineDetailPage({ params }: { params: { id: string } 
   const [reminderLabel, setReminderLabel] = useState('');
   const [reminderVoice, setReminderVoice] = useState(true);
   const [reportStatus, setReportStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [reportQuery, setReportQuery] = useState(hasMeaningfulQuery ? normalizedQuery : '');
 
   useEffect(() => {
     setReminders(loadReminders());
@@ -145,15 +153,44 @@ export default function MedicineDetailPage({ params }: { params: { id: string } 
 
   const speak = () => {
     if (!medicine) return;
+    if (locale === 'en') return;
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(readAloudText);
-    utter.lang = locale === 'zh' ? 'zh-CN' : 'en-US';
-    utter.rate = locale === 'zh' ? 0.9 : 0.95;
-    utter.onend = () => setIsSpeaking(false);
-    utter.onerror = () => setIsSpeaking(false);
-    setIsSpeaking(true);
-    window.speechSynthesis.speak(utter);
+    utter.lang = 'zh-CN';
+    utter.rate = 0.88;
+    utter.pitch = 1.05;
+    utter.volume = 1.0;
+
+    // Pick the best available zh-CN voice
+    const trySpeak = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = [
+        'Microsoft Xiaoxiao Online (Natural) - Chinese (Mainland)',
+        'Microsoft Xiaoyi Online (Natural) - Chinese (Mainland)',
+        'Microsoft Yunxi Online (Natural) - Chinese (Mainland)',
+        'Google 普通话（中国大陆）',
+        'Ting-Ting',
+      ];
+      let chosen = voices.find(v => preferred.some(p => v.name.includes(p.split(' ')[1] ?? p)));
+      if (!chosen) chosen = voices.find(v => v.lang === 'zh-CN' || v.lang === 'zh_CN');
+      if (!chosen) chosen = voices.find(v => v.lang.startsWith('zh'));
+      if (chosen) utter.voice = chosen;
+      utter.onend = () => setIsSpeaking(false);
+      utter.onerror = () => setIsSpeaking(false);
+      setIsSpeaking(true);
+      window.speechSynthesis.speak(utter);
+    };
+
+    // Voices may not be loaded yet on first call
+    if (window.speechSynthesis.getVoices().length > 0) {
+      trySpeak();
+    } else {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.onvoiceschanged = null;
+        trySpeak();
+      };
+    }
   };
 
   const stop = () => {
@@ -207,16 +244,39 @@ export default function MedicineDetailPage({ params }: { params: { id: string } 
           <div className="text-lg text-warm-800/60 font-medium mb-10 max-w-2xl mx-auto space-y-4">
             <p>
               {locale === 'zh'
-                ? `未找到“${decodedId}”。可能是名称输入差异（商品名/通用名）、拼写问题，或该药尚未收录。`
-                : `We could not find “${decodedId}”. This may be due to brand/generic differences, typos, or the medicine not being included yet.`}
+                ? hasMeaningfulQuery
+                  ? `未找到“${displayQuery}”。可能是名称输入差异（商品名/通用名）、拼写问题，或该药尚未收录。`
+                  : '未找到你要查看的药品。可能是链接不完整，或该药尚未收录。'
+                : hasMeaningfulQuery
+                  ? `We could not find “${displayQuery}”. This may be due to brand/generic differences, typos, or the medicine not being included yet.`
+                  : 'We could not find the medicine you were trying to open. The link may be incomplete, or it is not included yet.'}
             </p>
-            {suggestions.length > 0 && (
+            <div className="pt-2">
+              <div className="text-xs font-black text-warm-400 uppercase tracking-[0.2em] mb-3">
+                {locale === 'zh' ? '提交药品名称（帮助我们补充）' : 'Submit the medicine name (helps us improve)'}
+              </div>
+              <input
+                value={reportQuery}
+                onChange={(e) => {
+                  setReportStatus('idle');
+                  setReportQuery(e.target.value);
+                }}
+                placeholder={locale === 'zh' ? '例如：布洛芬 / ZzzQuil / Pepcid' : 'e.g., Ibuprofen / ZzzQuil / Pepcid'}
+                className="w-full rounded-[2.5rem] border-2 border-warm-100 bg-white px-8 py-5 text-base font-bold text-warm-900 placeholder:text-warm-300 focus:outline-none focus:ring-4 focus:ring-warm-200/50"
+              />
+              <div className="mt-4 text-sm text-warm-800/60 font-bold leading-relaxed">
+                {locale === 'zh'
+                  ? '可能原因：拼写差异、商品名/通用名不同，或该药为处方药暂未收录。'
+                  : 'Possible reasons: typos, brand/generic differences, or it is prescription-only and not in the OTC catalog.'}
+              </div>
+            </div>
+            {suggestionMedicines.length > 0 && (
               <div className="pt-4">
                 <div className="text-xs font-black text-warm-400 uppercase tracking-[0.2em] mb-4">
                   {locale === 'zh' ? '你是不是想找' : 'Did you mean'}
                 </div>
                 <div className="flex flex-wrap gap-3 justify-center">
-                  {suggestions.map((m) => (
+                  {suggestionMedicines.map((m) => (
                     <Link
                       key={m.id}
                       href={`/medicines/${encodeURIComponent(m.id)}`}
@@ -237,12 +297,14 @@ export default function MedicineDetailPage({ params }: { params: { id: string } 
             <button
               onClick={async () => {
                 if (reportStatus === 'sending' || reportStatus === 'sent') return;
+                const q = reportQuery.trim();
+                if (!q) return;
                 setReportStatus('sending');
                 try {
                   const res = await fetch('/api/medicines/missing', {
                     method: 'POST',
                     headers: { 'content-type': 'application/json' },
-                    body: JSON.stringify({ query: decodedId, context: { path: `/medicines/${params.id}`, locale } })
+                    body: JSON.stringify({ query: q, context: { path: `/medicines/${id}`, locale } })
                   });
                   if (!res.ok) throw new Error('report failed');
                   setReportStatus('sent');
@@ -250,7 +312,8 @@ export default function MedicineDetailPage({ params }: { params: { id: string } 
                   setReportStatus('error');
                 }
               }}
-              className="px-8 py-4 rounded-[2rem] border-2 font-black text-lg transition-all bg-white text-warm-700 border-warm-100 hover:border-warm-200"
+              disabled={!reportQuery.trim()}
+              className="px-8 py-4 rounded-[2rem] border-2 font-black text-lg transition-all bg-white text-warm-700 border-warm-100 hover:border-warm-200 disabled:opacity-50 disabled:hover:border-warm-100"
             >
               {locale === 'zh'
                 ? reportStatus === 'sent'
@@ -338,17 +401,26 @@ export default function MedicineDetailPage({ params }: { params: { id: string } 
           </div>
 
           <div className="flex flex-col md:flex-row gap-4 md:items-center mt-4">
-            <button
-              onClick={isSpeaking ? stop : speak}
-              className="btn-warm inline-flex items-center justify-center gap-3 text-lg"
-            >
-              {isSpeaking ? <CircleStop size={22} /> : <CirclePlay size={22} />}
-              {locale === 'zh' ? (isSpeaking ? '停止朗读' : '朗读说明书') : isSpeaking ? 'Stop' : 'Read Aloud'}
-              <Volume2 size={20} />
-            </button>
-            <div className="text-sm text-warm-800/60 font-bold">
-              {locale === 'zh' ? '提示：朗读依赖浏览器语音能力；在部分设备上可能不可用。' : 'Note: read-aloud depends on browser speech support and may be unavailable on some devices.'}
-            </div>
+            {locale === 'zh' && (
+              <>
+                <button
+                  onClick={isSpeaking ? stop : speak}
+                  className="btn-warm inline-flex items-center justify-center gap-3 text-lg"
+                >
+                  {isSpeaking ? <CircleStop size={22} /> : <CirclePlay size={22} />}
+                  {isSpeaking ? '停止朗读' : '朗读说明书'}
+                  <Volume2 size={20} />
+                </button>
+                <div className="text-sm text-warm-800/60 font-bold">
+                  提示：朗读依赖浏览器语音能力；在部分设备上可能不可用。
+                </div>
+              </>
+            )}
+            {locale === 'en' && (
+              <div className="text-sm text-warm-800/60 font-bold">
+                Note: read-aloud feature is available in Chinese version.
+              </div>
+            )}
           </div>
         </div>
 

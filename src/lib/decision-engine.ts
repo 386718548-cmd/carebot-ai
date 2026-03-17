@@ -1,4 +1,5 @@
 import type { Medicine } from '@/data/medicines';
+import { detectRedFlagsEnhanced } from '@/lib/red-flag-detector';
 
 export interface MatchResult {
   medicine: Medicine;
@@ -71,13 +72,7 @@ export function detectRedFlags(selectedTags: string[]): RedFlagResult {
     }
   });
 
-  return {
-    isCritical: alertsEn.length > 0,
-    alerts: {
-      en: alertsEn,
-      zh: alertsZh
-    }
-  };
+  return detectRedFlagsEnhanced(selectedTags);
 }
 
 export function matchDrugs(
