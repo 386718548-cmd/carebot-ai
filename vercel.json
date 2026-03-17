@@ -1,6 +1,8 @@
 {
-  "buildCommand": "next build",
-  "outputDirectory": "/",
-  "devCommand": "next dev",
-  "installCommand": "npm install"
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/.next/server/app/index.html"
+    }
+  ]
 }
