@@ -1,8 +1,8 @@
 {
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/.next/server/app/index.html"
-    }
+    { "source": "/", "destination": "/.next/server/app/index.html" },
+    { "source": "/symptoms", "destination": "/.next/server/app/symptoms.html" },
+    { "source": "/medicines", "destination": "/.next/server/app/medicines.html" },
+    { "source": "/survey", "destination": "/.next/server/app/survey.html" }
   ]
 }
